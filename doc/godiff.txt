@@ -1,0 +1,75 @@
+*godiff.txt*	For Vim version 7.4+	November 2016
+*godiff* *GoDiff* by Rolf Asmund
+=============================================================================
+      GGGGGGGGGG            DDDDDDDDDD        ii     fffffffff    fffffffff  
+   GGGGGGGGGGGGG            DDDDDDDDDDDD     iiii   fffffffffff  fffffffffff 
+  GGGGGGGGGGGGGG            DDDDDDDDDDDDDD         ffffffffffffffffffffffffff
+ GGGGG     GGGGG  ooooooo     DDDDD   DDDDD iiiii  ffff     ffffffff     ffff
+GGGGG            oooooooooo   DDDDD    DDDDDiiiii  ffff         ffff         
+GGGGG           oooooooooooo  DDDDD    DDDDD iiii fffffffff    fffffffff     
+GGGGG   GGGGGGGGoooooooooooo  DDDDD    DDDDD iiii fffffffff    fffffffff     
+GGGGG   GGGGGGGGoooo    oooo  DDDDD    DDDDD iiii fffffffff    fffffffff     
+GGGGG      GGGGGoooo    oooo  DDDDD    DDDDD iiii  ffff         ffff         
+ GGGGG     GGGGGoooo    oooo  DDDDD   DDDDD  iiii  ffff         ffff         
+  GGGGGGGGGGGGGGooooooooooooDDDDDDDDDDDDDD  iiiiiiffffff       ffffff        
+   GGGGGGGGGGGGG oooooooooo DDDDDDDDDDDD    iiiiiiffffff       ffffff        
+      GGGG   GGG  ooooooo   DDDDDDDDDD      iiiiiiffffff       ffffff        
+=============================================================================
+CONTENTS                                                      *godiff-contents*
+
+    1. Intro.....................................................|godiff-intro|
+    2. Options.................................................|godiff-options|
+    3. Commands...............................................|godiff-commands|
+    4. Future...................................................|godiff-future|
+
+=============================================================================
+INTRO                                                            *godiff-intro*
+A plug-in to quickly compare two sections of text with colors.
+
+checkout the wiki here with screenshots:
+
+http://vim.wikia.com/wiki/Script:5350
+
+First copy text-1 (e.g. '3yy' to copy 3 lines).
+Then, either
+  visually select text-2 (e.g. 'V2j' to visually select 3 lines).
+  Now press 'gd' to compare text-1 and text-2.
+Or
+  give a count for number of lines to diff followed by gd (e.g. '3gd').
+Finally press 'gd' again to restore colors.
+                                                                                  
+Registers can also be used. Try '"a3yy' or '3"ayy' to copy 3 lines to
+register 'a'.
+Then '"a3gd' or '3"agd' on text to compare with.
+                                                                                  
+For single line compare, simply press 'yy' on text-1 and 'gd' on text-2.
+
+=============================================================================
+OPTIONS                                                        *godiff-options*
+
+  |g:godiff_mapping|
+
+    Set this to the key-combo to godiff. If not set, use default 'gd'.
+    Set to empty to disable godiff mapping.
+    (not implemented yet.)
+
+=============================================================================
+COMMANDS                                                      *godiff-commands*
+>
+    :GoDiff
+<
+    Use this ex-command to godiff from ex-mode
+    (not implemented yet.)
+
+=============================================================================
+FUTURE                                                          *godiff-future*
+
+ - configurable mapping. Don't hardcode to 'gd'
+ - Use :GoDiff to godiff from ex-mode
+ - Use |matchaddpos| rather than syntax highlight to get faster rendering and
+   don't mess with users colors
+ - Use suffix tree to get much faster diff
+ - Use autoload
+
+=============================================================================
+vim:tw=78:ts=8:ft=help:norl:
