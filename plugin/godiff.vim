@@ -1,54 +1,36 @@
-" Vim GoDiff 1.2 April 2016
+" Vim GoDiff 1.3 December 2016
 " A plugin to quickly compare to sections of text with colors
 " Installation:
-"     Source this file
-"   or
-"     Copy its content into your .vimrc
-"   or
-"     If using pathogen, copy this file into .vim/bundle/godiff/plugin/
-"   or
-"     Copy it to your .vim/plugin directory to automatically source it when vim
-"     starts
-"   or
-"     Copy it to your .vim/plugins directory (or any other directory) and source
-"     it explicitly from your .vimrc
-" Usgae:
-"   First copy text-1 (e.g. '3yy' to copy 3 lines) 
-"   Then, either
-"     visually select text-2 (e.g. 'V2j' to visually select 3 lines)
-"     Now press 'gd' to compare text-1 and text-2
-"   Or
-"     give a count for number of lines to diff followed by gd (e.g. '3gd')
-"   Finally press 'gd' again to restore colors
-"
-"   Registers can also be used. Try '"a3yy' or '3"ayy' to copy 3 lines to register 'a'
-"   Then '"a3gd' or '3"agd' on text to compare with.
-"
-"   For single line compare, simply press 'yy' on text-1 and 'gd' on text-2
-" Note:
-"   If you have some personal highlights, read the comment in the end of this
-"   file
+"     Use Pathogen or Vundle
+"     (or just copy the files into your vim dirs 'plugin', 'auotoload', 'doc' etc)
 " Author:
 "   Rolf Asmund
 
 let s:active = 0
 let s:matches = []
 
+if !exists('g:godiff_mapping')
+	let g:godiff_mapping = 'gd'
+endif
+
+execute "vnoremap <silent> " . g:godiff_mapping . " :<c-u>call <SID>GoDiffVisual(v:register)<CR>"
+execute "nnoremap <silent> " . g:godiff_mapping . " :<c-u>call <SID>GoDiffNormal()<CR>"
+
 function! s:Diff_LongestMatchingSubsection(a, a0, a1, b, b0, b1)
 	let ret = [a:a0, a:b0, 0]
-    let runs = {}
-    for i in range(a:a0, a:a1-1)
-        let new_runs = {}
-        for j in range(a:b0, a:b1-1)
-            if a:a[i] == a:b[j]
-                let k = get(runs, j-1, 0) + 1
+	let runs = {}
+	for i in range(a:a0, a:a1-1)
+		let new_runs = {}
+		for j in range(a:b0, a:b1-1)
+			if a:a[i] == a:b[j]
+				let k = get(runs, j-1, 0) + 1
 				let new_runs[j] = k
-                if k > ret[2]
+				if k > ret[2]
 					let ret = [i-k+1,j-k+1,k]
 				endif
 			endif
 		endfor
-        let runs = new_runs
+		let runs = new_runs
 	endfor
 	return ret
 endfunction
@@ -186,7 +168,3 @@ function! s:GoDiffNormal()
 		call s:GoDiffVisual(register)
 	endif
 endfunction
-
-" Set-up the mappings
-vnoremap <silent> gd :<c-u>call <SID>GoDiffVisual(v:register)<cr>
-nnoremap <silent> gd :<c-u>call <SID>GoDiffNormal()<cr>

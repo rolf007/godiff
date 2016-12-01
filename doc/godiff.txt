@@ -51,7 +51,6 @@ OPTIONS                                                        *godiff-options*
 
     Set this to the key-combo to godiff. If not set, use default 'gd'.
     Set to empty to disable godiff mapping.
-    (not implemented yet.)
 
 =============================================================================
 COMMANDS                                                      *godiff-commands*
@@ -64,7 +63,6 @@ COMMANDS                                                      *godiff-commands*
 =============================================================================
 FUTURE                                                          *godiff-future*
 
- - configurable mapping. Don't hardcode to 'gd'
  - Use :GoDiff to godiff from ex-mode
  - Use suffix tree to get much faster diff
  - Use autoload
