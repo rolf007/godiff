@@ -1,19 +1,19 @@
 *godiff.txt*	For Vim version 7.4+	November 2016
 *godiff* *GoDiff* by Rolf Asmund
 =============================================================================
-      GGGGGGGGGG            DDDDDDDDDD        ii     fffffffff    fffffffff  
-   GGGGGGGGGGGGG            DDDDDDDDDDDD     iiii   fffffffffff  fffffffffff 
+      GGGGGGGGGG            DDDDDDDDDD        ii     fffffffff    fffffffff
+   GGGGGGGGGGGGG            DDDDDDDDDDDD     iiii   fffffffffff  fffffffffff
   GGGGGGGGGGGGGG            DDDDDDDDDDDDDD         ffffffffffffffffffffffffff
  GGGGG     GGGGG  ooooooo     DDDDD   DDDDD iiiii  ffff     ffffffff     ffff
-GGGGG            oooooooooo   DDDDD    DDDDDiiiii  ffff         ffff         
-GGGGG           oooooooooooo  DDDDD    DDDDD iiii fffffffff    fffffffff     
-GGGGG   GGGGGGGGoooooooooooo  DDDDD    DDDDD iiii fffffffff    fffffffff     
-GGGGG   GGGGGGGGoooo    oooo  DDDDD    DDDDD iiii fffffffff    fffffffff     
-GGGGG      GGGGGoooo    oooo  DDDDD    DDDDD iiii  ffff         ffff         
- GGGGG     GGGGGoooo    oooo  DDDDD   DDDDD  iiii  ffff         ffff         
-  GGGGGGGGGGGGGGooooooooooooDDDDDDDDDDDDDD  iiiiiiffffff       ffffff        
-   GGGGGGGGGGGGG oooooooooo DDDDDDDDDDDD    iiiiiiffffff       ffffff        
-      GGGG   GGG  ooooooo   DDDDDDDDDD      iiiiiiffffff       ffffff        
+GGGGG            oooooooooo   DDDDD    DDDDDiiiii  ffff         ffff
+GGGGG           oooooooooooo  DDDDD    DDDDD iiii fffffffff    fffffffff
+GGGGG   GGGGGGGGoooooooooooo  DDDDD    DDDDD iiii fffffffff    fffffffff
+GGGGG   GGGGGGGGoooo    oooo  DDDDD    DDDDD iiii fffffffff    fffffffff
+GGGGG      GGGGGoooo    oooo  DDDDD    DDDDD iiii  ffff         ffff
+ GGGGG     GGGGGoooo    oooo  DDDDD   DDDDD  iiii  ffff         ffff
+  GGGGGGGGGGGGGGooooooooooooDDDDDDDDDDDDDD  iiiiiiffffff       ffffff       V
+   GGGGGGGGGGGGG oooooooooo DDDDDDDDDDDD    iiiiiiffffff       ffffff       I
+      GGGG   GGG  ooooooo   DDDDDDDDDD      iiiiiiffffff       ffffff       M
 =============================================================================
 CONTENTS                                                      *godiff-contents*
 
@@ -66,8 +66,6 @@ FUTURE                                                          *godiff-future*
 
  - configurable mapping. Don't hardcode to 'gd'
  - Use :GoDiff to godiff from ex-mode
- - Use |matchaddpos| rather than syntax highlight to get faster rendering and
-   don't mess with users colors
  - Use suffix tree to get much faster diff
  - Use autoload
 

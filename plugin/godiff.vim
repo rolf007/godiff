@@ -32,6 +32,7 @@
 "   Rolf Asmund
 
 let s:active = 0
+let s:matches = []
 
 function! s:Diff_LongestMatchingSubsection(a, a0, a1, b, b0, b1)
 	let ret = [a:a0, a:b0, 0]
@@ -118,13 +119,15 @@ function! s:GoDiff(register)
 	let c0 = col("'<")
 	" l0p and c0p is line and column and char ahead, so we colorize one char at
 	" a time
-	syntax clear
 	let i = 0
 	while b[i] == "\x0a"
 		let c0 = 1
 		let l0 = l0 + 1
 		let i = i + 1
 	endwhile
+	hi Red term=reverse cterm=bold ctermfg=White ctermbg=Red guifg=White guibg=Red
+	hi Blue term=reverse cterm=bold ctermfg=White ctermbg=Blue guifg=White guibg=Blue
+	hi Green term=reverse cterm=bold ctermfg=White ctermbg=Green guifg=White guibg=Green
 	while i < len(c)
 		let c0p = c0 + 1
 		let l0p = l0
@@ -135,35 +138,23 @@ function! s:GoDiff(register)
 			let j = j + 1
 		endwhile
 		let col = c[i] == '0' ? 'Red' : (c[i] == '2' ? 'Green': 'Blue')
-		execute ':syntax region ' . col . ' start="\%' . c0 . 'c\%' . l0 . 'l" end="\%' . c0p . 'c\%' . l0p . 'l"'
+		let m = matchaddpos(col, [[l0, c0, 1]])
+		call add(s:matches, m)
 		let c0 = c0p
 		let l0 = l0p
 		let i = j
 	endwhile
-	hi Red term=reverse cterm=bold ctermfg=White ctermbg=Red guifg=White guibg=Red
-	hi Blue term=reverse cterm=bold ctermfg=White ctermbg=Blue guifg=White guibg=Blue
-	hi Green term=reverse cterm=bold ctermfg=White ctermbg=Green guifg=White guibg=Green
-	let s:user_spell = &l:spell
-	setl nospell
-	let s:user_hlsearch = &l:hlsearch
-	setl nohlsearch
 	let s:active = 1
 endfunction
 
 function! s:GoDiffStop()
 	if s:active
 		" if active, then stop and return to normal
-		if s:user_spell
-			setl spell
-		endif
-		if s:user_hlsearch
-			setl hlsearch
-		endif
-		syntax on
+		for m in s:matches
+			call matchdelete(m)
+		endfor
+		let s:matches = []
 		let s:active = 0
-		if exists("*g:GoDiffExitFunc")
-			call g:GoDiffExitFunc()
-		endif
 	else
 		" if not active, do a one-line diff
 		let register = v:register
@@ -179,15 +170,3 @@ endfunction
 " Set-up the mappings
 vnoremap <silent> gd :<c-u>call <SID>GoDiff(v:register)<cr>
 nnoremap <silent> gd :<c-u>call <SID>GoDiffStop()<cr>
-
-" if you have some personal highlight settings, you should define a function
-" g:GoDiffExitFunc like this:
-"
-"function! s:MyHighlights()
-"	hi Search term=underline cterm=underline ctermfg=NONE ctermbg=NONE
-"	hi Comment term=NONE cterm=NONE ctermfg=DarkGreen ctermbg=NONE
-"endfunction
-"
-" let g:GoDiffExitFunc = function("<SID>MyHighlights")
-"
-
