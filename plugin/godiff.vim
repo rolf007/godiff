@@ -53,9 +53,12 @@ function! s:Diff_LongestMatchingSubsection(a, a0, a1, b, b0, b1)
 	return ret
 endfunction
 
-function! s:GoDiff(register)
+function! s:GoDiffVisual(register)
 " simple text-diff algorithm inspired by:
 " http://pynash.org/2013/02/26/diff-in-50-lines.html
+	if s:active
+		call s:GoDiffStop()
+	endif
 	"threshold: how small sections should be considered a match?
 	let threshold = 5
 	" a = content of yank-/put-register (reg-0)
@@ -125,9 +128,11 @@ function! s:GoDiff(register)
 		let l0 = l0 + 1
 		let i = i + 1
 	endwhile
-	hi Red term=reverse cterm=bold ctermfg=White ctermbg=Red guifg=White guibg=Red
-	hi Blue term=reverse cterm=bold ctermfg=White ctermbg=Blue guifg=White guibg=Blue
-	hi Green term=reverse cterm=bold ctermfg=White ctermbg=Green guifg=White guibg=Green
+	hi GoDiffChanged term=reverse cterm=bold ctermfg=White ctermbg=Red guifg=White guibg=Red
+	hi GoDiffRemoved term=reverse cterm=bold ctermfg=White ctermbg=Blue guifg=White guibg=Blue
+	hi GoDiffIdentic term=reverse cterm=bold ctermfg=White ctermbg=Green guifg=White guibg=Green
+	let m = -1
+	let l = 0
 	while i < len(c)
 		let c0p = c0 + 1
 		let l0p = l0
@@ -137,9 +142,20 @@ function! s:GoDiff(register)
 			let l0p = l0p + 1
 			let j = j + 1
 		endwhile
-		let col = c[i] == '0' ? 'Red' : (c[i] == '2' ? 'Green': 'Blue')
-		let m = matchaddpos(col, [[l0, c0, 1]])
+		let col = c[i] == '0' ? 'GoDiffChanged' : (c[i] == '2' ? 'GoDiffIdentic': 'GoDiffRemoved')
+		if m != -1 && oc0 == c0-1 && ol0 == l0 && ocol == col
+			call matchdelete(m)
+			let s:matches = s:matches[:-2]
+			let l = l+1
+		else
+			let l = 1
+		endif
+
+		let m = matchaddpos(col, [[l0, c0-l+1, l]])
 		call add(s:matches, m)
+		let oc0 = c0
+		let ol0 = l0
+		let ocol = col
 		let c0 = c0p
 		let l0 = l0p
 		let i = j
@@ -148,25 +164,29 @@ function! s:GoDiff(register)
 endfunction
 
 function! s:GoDiffStop()
+	for m in s:matches
+		call matchdelete(m)
+	endfor
+	let s:matches = []
+	let s:active = 0
+endfunction
+
+function! s:GoDiffNormal()
 	if s:active
 		" if active, then stop and return to normal
-		for m in s:matches
-			call matchdelete(m)
-		endfor
-		let s:matches = []
-		let s:active = 0
+		call s:GoDiffStop()
 	else
-		" if not active, do a one-line diff
+		" if not active, do a linewise diff
 		let register = v:register
 		if v:count > 1
 			silent execute "normal! V" . (v:count - 1) . "j\<esc>"
 		else
 			silent execute "normal! V\<esc>"
 		endif
-		call s:GoDiff(register)
+		call s:GoDiffVisual(register)
 	endif
 endfunction
 
 " Set-up the mappings
-vnoremap <silent> gd :<c-u>call <SID>GoDiff(v:register)<cr>
-nnoremap <silent> gd :<c-u>call <SID>GoDiffStop()<cr>
+vnoremap <silent> gd :<c-u>call <SID>GoDiffVisual(v:register)<cr>
+nnoremap <silent> gd :<c-u>call <SID>GoDiffNormal()<cr>
