@@ -102,8 +102,7 @@ function! s:GoDiffVisual(register)
 	" get selections start-line and start-column in l0 and c0
 	let l0 = line("'<")
 	let c0 = col("'<")
-	" l0p and c0p is line and column and char ahead, so we colorize one char at
-	" a time
+	" we colorize one char at a time
 	let i = 0
 	while b[i] == "\x0a"
 		let c0 = 1
@@ -113,35 +112,28 @@ function! s:GoDiffVisual(register)
 	hi GoDiffChanged term=reverse cterm=bold ctermfg=White ctermbg=Red guifg=White guibg=Red
 	hi GoDiffRemoved term=reverse cterm=bold ctermfg=White ctermbg=Blue guifg=White guibg=Blue
 	hi GoDiffIdentic term=reverse cterm=bold ctermfg=White ctermbg=Green guifg=White guibg=Green
-	let m = -1
 	let l = 0
+	let oc0 = c0
+	let ol0 = l0
 	while i < len(c)
-		let c0p = c0 + 1
-		let l0p = l0
-		let j = i + 1
-		while b[j] == "\x0a"
-			let c0p = 1
-			let l0p = l0p + 1
-			let j = j + 1
-		endwhile
 		let col = c[i] == '0' ? 'GoDiffChanged' : (c[i] == '2' ? 'GoDiffIdentic': 'GoDiffRemoved')
-		if m != -1 && oc0 == c0-1 && ol0 == l0 && ocol == col
-			call matchdelete(m)
-			let s:matches = s:matches[:-2]
-			let l = l+1
-		else
-			let l = 1
+		if l != 0 && (ol0 != l0 || ocol != col)
+			call add(s:matches, matchaddpos(ocol, [[ol0, oc0-l+1, l]]))
+			let l = 0
 		endif
-
-		let m = matchaddpos(col, [[l0, c0-l+1, l]])
-		call add(s:matches, m)
+		let l = l+1
 		let oc0 = c0
 		let ol0 = l0
 		let ocol = col
-		let c0 = c0p
-		let l0 = l0p
-		let i = j
+		let c0 = c0 + 1
+		let i = i + 1
+		while b[i] == "\x0a"
+			let c0 = 1
+			let l0 = l0 + 1
+			let i = i + 1
+		endwhile
 	endwhile
+	call add(s:matches, matchaddpos(ocol, [[ol0, oc0-l+1, l]]))
 	let s:active = 1
 endfunction
 
