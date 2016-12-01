@@ -1,5 +1,7 @@
 source "${BASH_SOURCE%/*}"/../setup.sh
 
+# Test odd visual range
+
 cat >>$vimtestdir/.vimrc <<EOL
 EOL
 

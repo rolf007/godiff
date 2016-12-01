@@ -1,5 +1,7 @@
 source "${BASH_SOURCE%/*}"/../setup.sh
 
+# Test typical usecase, including empty lines
+
 cat >>$vimtestdir/.vimrc <<EOL
 EOL
 

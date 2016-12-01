@@ -1,5 +1,5 @@
 " Vim GoDiff 1.3 December 2016
-" A plugin to quickly compare to sections of text with colors
+" A plugin to quickly compare two sections of text with colors
 " Installation:
 "     Use Pathogen or Vundle
 "     (or just copy the files into your vim dirs 'plugin', 'auotoload', 'doc' etc)
